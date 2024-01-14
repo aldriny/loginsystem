@@ -10,3 +10,5 @@
 
     $addUser = new SignupController($email,$firstName,$lastName,$pwd, $pwdRepeat);
     $addUser->signUp();
+
+    echo "hello " . $firstName . "" . $lastName;
