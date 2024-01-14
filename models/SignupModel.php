@@ -1,6 +1,6 @@
 <?php
 Class SignupModel extends Dbh {
-    public function checkEmailExist($email){
+    protected function checkEmailExist($email){
         $pdo = $this->connect();
         $sql = 'SELECT * FROM Users WHERE user_email = ?;';
         $stmt = $pdo->prepare($sql);
@@ -13,7 +13,7 @@ Class SignupModel extends Dbh {
             return false;
         }
     }
-    public function addUser($email,$firstName,$lastName,$pwd){
+    protected function addUser($email,$firstName,$lastName,$pwd){
         try {
             $pdo = $this->connect();
             $sql = 'INSERT INTO Users (user_email,user_firstName,user_lastName,user_password) VALUES (?,?,?,?);';

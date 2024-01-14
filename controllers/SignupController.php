@@ -4,45 +4,45 @@ class SignupController extends SignupModel{
     private $firstName;
     private $lastName;
     private $pwd;
-    private $pwdMatch;
+    private $pwdRepeat;
     private $errors = [];
 
-    public function __construct($email,$firstName,$lastName,$pwd, $pwdMatch)
+    public function __construct($email,$firstName,$lastName,$pwd, $pwdRepeat)
     {
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->pwd = $pwd;
-        $this->pwdMatch = $pwdMatch;
+        $this->pwdRepeat = $pwdRepeat;
     }
-    public function emptyInputs(){
-        if(empty($this->email) || empty($this->firstName) || empty($this->lastName) || empty($this->pwd) || empty($this->pwdMatch)){
+    private function emptyInputs(){
+        if(empty($this->email) || empty($this->firstName) || empty($this->lastName) || empty($this->pwd) || empty($this->pwdRepeat)){
             $this->errors[] = "emptyInputs";
         }
     }
-    public function isValidEmail(){
+    private function isValidEmail(){
         if(!filter_var($this->email,FILTER_VALIDATE_EMAIL)){
             $this->errors[] = "invalidEmail";
         }
     }
-    public function isValidName(){
+    private function isValidName(){
         $pattern = '/^(?=.{1,15}$)[A-Za-z]+(?:[\' -][A-Za-z]+)?$/';
         if(!preg_match($pattern, $this->firstName) || !preg_match($this->lastName, $pattern)){
             $this->errors[] = "invalidName";
         }
     }
-    public function isValidPassword(){
+    private function isValidPassword(){
         $pattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
         if(!preg_match($pattern, $this->pwd)){
             $this->errors[] = "invalidPassword";
         }
     }
-    public function isValidPasswordMatch(){
-        if($this->pwd !== $this->pwdMatch){
+    private function isValidPasswordMatch(){
+        if($this->pwd !== $this->pwdRepeat){
             $this->errors[] = "invalidPasswordMatch";
         }
     }
-    public function isEmailUnique(){
+    private function isEmailUnique(){
         $result = $this->checkEmailExist($this->email);
         if ($result == false) {
             $this->errors[] = "emailAlreadyTaken";
@@ -52,7 +52,10 @@ class SignupController extends SignupModel{
     public function signUp(){
         if (empty($this->errors)){
             $hashedPwd = password_hash($this->pwd, PASSWORD_DEFAULT);
-            $addUser = $this->addUser($this->email,$this->firstName,$this->lastName,$hashedPwd);
+            $this->addUser($this->email,$this->firstName,$this->lastName,$hashedPwd);
+        }
+        else{
+            echo "Error: " . $this->errors[0];
         }
     }
 
