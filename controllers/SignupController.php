@@ -16,47 +16,68 @@ class SignupController extends SignupModel{
         $this->pwdRepeat = $pwdRepeat;
     }
     private function emptyInputs(){
-        if(empty($this->email) || empty($this->firstName) || empty($this->lastName) || empty($this->pwd) || empty($this->pwdRepeat)){
-            $this->errors[] = "emptyInputs";
-        }
+            return !empty($this->email) && !empty($this->firstName) && !empty($this->lastName) && !empty($this->pwd) && !empty($this->pwdRepeat);  
+          //  $this->errors[] = "emptyInputs";
     }
     private function isValidEmail(){
-        if(!filter_var($this->email,FILTER_VALIDATE_EMAIL)){
-            $this->errors[] = "invalidEmail";
-        }
+        return filter_var($this->email,FILTER_VALIDATE_EMAIL);
+          //  $this->errors[] = "invalidEmail";
     }
     private function isValidName(){
         $pattern = '/^(?=.{1,15}$)[A-Za-z]+(?:[\' -][A-Za-z]+)?$/';
-        if(!preg_match($pattern, $this->firstName) || !preg_match($this->lastName, $pattern)){
-            $this->errors[] = "invalidName";
-        }
+        return preg_match($pattern, $this->firstName) || !preg_match($pattern, $this->lastName);
+           // $this->errors[] = "invalidName";
     }
     private function isValidPassword(){
         $pattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
-        if(!preg_match($pattern, $this->pwd)){
-            $this->errors[] = "invalidPassword";
-        }
+        return preg_match($pattern, $this->pwd);
+          //  $this->errors[] = "invalidPassword";
+        
     }
     private function isValidPasswordMatch(){
-        if($this->pwd !== $this->pwdRepeat){
-            $this->errors[] = "invalidPasswordMatch";
-        }
+        return $this->pwd === $this->pwdRepeat;
+         //   $this->errors[] = "invalidPasswordMatch";
     }
     private function isEmailUnique(){
-        $result = $this->checkEmailExist($this->email);
-        if ($result == false) {
+        return $this->uniqueEmail($this->email);
+           // $this->errors[] = "emailAlreadyTaken";
+    }
+    private function handleErrors($errors){     
+        $errorString = implode("&",array_map(function($error){
+            return "signupErrors[]=" . urlencode($error);
+        },$errors));
+        header("location: ../index.php?" . $errorString);
+        exit();
+    }
+    private function validate(){
+        if ($this->emptyInputs() == false){
+            $this->errors[] = "emptyInputs";
+        }
+        if ($this->isValidEmail() == false){
+            $this->errors[] = "invalidEmail";
+        }
+        if ($this->isValidName() == false){
+            $this->errors[] = "invalidName";
+        }
+        if ($this->isValidPassword() == false){
+            $this->errors[] = "invalidPassword";
+        }
+        if ($this->isValidPasswordMatch() == false){
+            $this->errors[] = "invalidPasswordMatch";
+        }
+        if ($this->isEmailUnique() == false){
             $this->errors[] = "emailAlreadyTaken";
         }
+        if (!empty($this->errors)){
+            $this->handleErrors($this->errors);
+        }
+
     }
 
     public function signUp(){
-        if (empty($this->errors)){
-            $hashedPwd = password_hash($this->pwd, PASSWORD_DEFAULT);
-            $this->addUser($this->email,$this->firstName,$this->lastName,$hashedPwd);
-        }
-        else{
-            echo "Error: " . $this->errors[0];
-        }
+        $this->validate();
+        $hashedPwd = password_hash($this->pwd, PASSWORD_DEFAULT);
+        $this->addUser($this->email,$this->firstName,$this->lastName,$hashedPwd);
     }
 
 

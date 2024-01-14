@@ -14,5 +14,13 @@
         <input type="password" name="pwdRepeat" placeholder=" Repeat Password">
         <button>Sign Up</button>
     </form>
+    <?php
+        if(isset($_GET['signupErrors'])){
+            $signupErrors = $_GET['signupErrors'];
+            foreach ($signupErrors as $error){
+                echo "<p style='color: red'>" . $error . "</p>";
+            }
+        }
+    ?>
 </body>
 </html>

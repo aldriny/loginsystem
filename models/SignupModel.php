@@ -1,16 +1,16 @@
 <?php
 Class SignupModel extends Dbh {
-    protected function checkEmailExist($email){
+    protected function uniqueEmail($email){
         $pdo = $this->connect();
         $sql = 'SELECT * FROM Users WHERE user_email = ?;';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$email]);
         $result = $stmt->fetch();
         if($result){
-            return true;
+            return false;
         }
         else{
-            return false;
+            return true;
         }
     }
     protected function addUser($email,$firstName,$lastName,$pwd){
