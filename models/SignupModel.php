@@ -2,31 +2,21 @@
 Class SignupModel extends Dbh {
     protected function uniqueEmail($email){
         $pdo = $this->connect();
-        $sql = 'SELECT * FROM Users WHERE user_email = ?;';
+        $sql = 'SELECT * FROM Users WHERE user_email = ?';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$email]);
         $result = $stmt->fetch();
-        if($result){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return !$result;
     }
     protected function addUser($email,$firstName,$lastName,$pwd){
         try {
             $pdo = $this->connect();
-            $sql = 'INSERT INTO Users (user_email,user_firstName,user_lastName,user_password) VALUES (?,?,?,?);';
+            $sql = 'INSERT INTO Users (user_email,user_firstName,user_lastName,user_password) VALUES (?,?,?,?)';
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$email,$firstName,$lastName,$pwd]);
-            if ($stmt->rowCount() > 0) {
-                return true;
-            }
-            else{
-                return false;
-            }
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            throw new Exception("Database error: " . $e->getMessage());
         }
         
        

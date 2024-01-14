@@ -17,30 +17,23 @@ class SignupController extends SignupModel{
     }
     private function emptyInputs(){
             return !empty($this->email) && !empty($this->firstName) && !empty($this->lastName) && !empty($this->pwd) && !empty($this->pwdRepeat);  
-          //  $this->errors[] = "emptyInputs";
     }
     private function isValidEmail(){
         return filter_var($this->email,FILTER_VALIDATE_EMAIL);
-          //  $this->errors[] = "invalidEmail";
     }
     private function isValidName(){
         $pattern = '/^(?=.{1,15}$)[A-Za-z]+(?:[\' -][A-Za-z]+)?$/';
         return preg_match($pattern, $this->firstName) || !preg_match($pattern, $this->lastName);
-           // $this->errors[] = "invalidName";
     }
     private function isValidPassword(){
         $pattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
-        return preg_match($pattern, $this->pwd);
-          //  $this->errors[] = "invalidPassword";
-        
+        return preg_match($pattern, $this->pwd);        
     }
     private function isValidPasswordMatch(){
         return $this->pwd === $this->pwdRepeat;
-         //   $this->errors[] = "invalidPasswordMatch";
     }
     private function isEmailUnique(){
         return $this->uniqueEmail($this->email);
-           // $this->errors[] = "emailAlreadyTaken";
     }
     private function handleErrors($errors){     
         $errorString = implode("&",array_map(function($error){
