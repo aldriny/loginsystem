@@ -2,14 +2,13 @@
 spl_autoload_register('autoloader');
 
 function autoloader($className) {
-    $controllerPath = __DIR__ . '/../controllers/' . $className . '.php';
-    $modelPath = __DIR__ . '/../models/' . $className . '.php';
 
-    if (file_exists($controllerPath)) {
-        require_once $controllerPath;
-    } elseif (file_exists($modelPath)) {
-        require_once $modelPath;
+    $path = __DIR__ . '/../' . $className . '.php';
+
+    if (file_exists($path)) {
+        require_once $path;
     } else {
-        throw new Exception("Class not found: $className");
+        error_log("Class not found: $className");
+        echo "Something went wrong, Try again later.";
     }
 }

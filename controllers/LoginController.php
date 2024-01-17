@@ -1,4 +1,6 @@
 <?php
+namespace Controllers;
+use Models\LoginModel;
 class LoginController extends LoginModel{
     private $email;
     private $pwd;
@@ -20,12 +22,11 @@ class LoginController extends LoginModel{
         $pattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
         return preg_match($pattern, $this->pwd);
     }
-    private function isMatchPassword(){
-        $hashedPwd = $this->matchPassword($this->email);
-        return password_verify($this->pwd, $hashedPwd);
-    }
     private function isValidCredentials(){
-        return $this->validCredentials($this->email,$this->matchPassword($this->email));
+        $hashedPwd = $this->matchPassword($this->email);
+        if (password_verify($this->pwd, $hashedPwd)){
+            return $this->validCredentials($this->email,$this->matchPassword($this->email));
+        }
     }
 
     private function handleErrors($errors){
@@ -40,16 +41,12 @@ class LoginController extends LoginModel{
         if ($this->emptyInputs() == false) {
             $this->errors[] = "emptyInputs";
         }
-        if ($this->isMatchPassword() == false) {
-            $this->errors[] = "wrongEmailOrPassword";
-        }
         if ($this->isValidEmail() == false) {
             $this->errors[] = "invalidEmail";
         }
         if ($this->isValidPassword() == false) {
             $this->errors[] = "invalidPassword";
         }
-
         if ($this->isValidCredentials() == false) {
             $this->errors[] = "invalidCredentials";
         }

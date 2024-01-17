@@ -1,5 +1,5 @@
 <?php
-
+    use Controllers\SignupController;
     include '../includes/autoloader.php';
 
     $email = $_POST['email'];

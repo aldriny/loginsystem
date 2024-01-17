@@ -1,4 +1,5 @@
 <?php
+use Controllers\LoginController;
 include "../includes/autoloader.php";
 
 $email = $_POST['email'];

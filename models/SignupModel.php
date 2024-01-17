@@ -1,8 +1,10 @@
 <?php
+namespace Models;
+use Config\Dbh;
 Class SignupModel extends Dbh {
     protected function uniqueEmail($email){
         $pdo = $this->connect();
-        $sql = 'SELECT * FROM Users WHERE user_email = ?';
+        $sql = 'SELECT user_email FROM Users WHERE user_email = ?';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$email]);
         $result = $stmt->fetch();
@@ -14,9 +16,15 @@ Class SignupModel extends Dbh {
             $sql = 'INSERT INTO Users (user_email,user_firstName,user_lastName,user_password) VALUES (?,?,?,?)';
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$email,$firstName,$lastName,$pwd]);
-            return $stmt->rowCount() > 0;
-        } catch (PDOException $e) {
-            throw new Exception("Database error: " . $e->getMessage());
+            if ($stmt->rowCount() > 0) {
+                return true;
+            }
+            else{
+                error_log("User addition failed, no rows affected");
+            }
+        } catch (\PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            throw new \Exception("An error occurred while processing your request. Please try again later.");
         }
         
        

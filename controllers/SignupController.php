@@ -1,4 +1,6 @@
 <?php
+namespace Controllers;
+use Models\SignupModel;
 class SignupController extends SignupModel{
     private $email;
     private $firstName;

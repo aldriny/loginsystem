@@ -1,4 +1,7 @@
 <?php
+namespace Models;
+use Config\Dbh;
+
 class LoginModel extends Dbh{
 
     protected function matchPassword($email){
@@ -12,7 +15,7 @@ class LoginModel extends Dbh{
 
     protected function validCredentials($email,$pwd){
         $pdo = $this->connect();
-        $sql = "SELECT * FROM Users WHERE user_email = ? && user_password = ?";
+        $sql = "SELECT user_email FROM Users WHERE user_email = ? && user_password = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$email,$pwd]);
         $result = $stmt->fetch();
