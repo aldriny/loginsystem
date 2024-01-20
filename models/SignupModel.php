@@ -20,7 +20,7 @@ Class SignupModel extends Dbh {
                 return true;
             }
             else{
-                error_log("User addition failed, no rows affected");
+                error_log("User addition failed, please try again");
             }
         } catch (\PDOException $e) {
             error_log("Database error: " . $e->getMessage());

@@ -1,11 +1,11 @@
 <?php
 use Controllers\LoginController;
-include "../includes/autoloader.php";
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$email = $_POST['email'];
-$pwd = $_POST['pwd'];
-
-$login = new LoginController($email, $pwd);
-$login->login();
-
-echo "you're logged in as " . $email;
+if (isset($_POST['email']) && isset($_POST['pwd'])) {
+    $email = $_POST['email'];
+    $pwd = $_POST['pwd']; 
+    $login = new LoginController($email, $pwd);
+    $login->login();
+    echo "you're logged in as " . $email; 
+}

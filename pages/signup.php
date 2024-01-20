@@ -1,6 +1,10 @@
 <?php
     use Controllers\SignupController;
-    include '../includes/autoloader.php';
+    use Controllers\EmailVerificationController;
+
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    session_start();
 
     $email = $_POST['email'];
     $firstName = $_POST['firstName'];
@@ -10,5 +14,10 @@
 
     $addUser = new SignupController($email,$firstName,$lastName,$pwd, $pwdRepeat);
     $addUser->signUp();
+    
+    $_SESSION['email'] = $email;
+    $verifyEmail = new EmailVerificationController();
+    $verifyEmail->sendEmail($email);
 
-    echo "hello " . $firstName . "" . $lastName;
+    header("location: email_verification.php");
+    exit();
