@@ -12,13 +12,25 @@ class LoginModel extends Dbh{
         $result = $stmt->fetch();
         return $result['user_password'];
     }
-
-    protected function validCredentials($email,$pwd){
+    protected function Verified($email){
         $pdo = $this->connect();
-        $sql = "SELECT user_email FROM Users WHERE user_email = ? && user_password = ?";
+        $sql = "SELECT verified FROM Users WHERE user_email = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$email,$pwd]);
+        $stmt->execute([$email]);
         $result = $stmt->fetch();
-        return $result;
+        if($result['verified'] === 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    protected function userId($email){
+        $pdo = $this->connect();
+        $sql = "SELECT id from Users WHERE user_email = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$email]);
+        $result = $stmt->fetch();
+        return $result['id'];
     }
 }

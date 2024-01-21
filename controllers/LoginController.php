@@ -24,11 +24,22 @@ class LoginController extends LoginModel{
     }
     private function isValidCredentials(){
         $hashedPwd = $this->matchPassword($this->email);
-        if (password_verify($this->pwd, $hashedPwd)){
-            return $this->validCredentials($this->email,$this->matchPassword($this->email));
+        return password_verify($this->pwd, $hashedPwd);
+    }
+    private function isVerified(){
+        return $this->Verified($this->email);
+    }
+    private function startLoginSession(){
+        if ($this->isValidCredentials()){
+            $id = $this->userId($this->email);
+            $_SESSION['user_id'] = $id;
+            $_SESSION['user_email']= $this->email;
+            if (!$this->isVerified()) {
+                header("location: ../Pages/email_verification.php");
+                exit();
+            }
         }
     }
-
     private function handleErrors($errors){
         $errorString = implode("&", array_map(function ($error){
             return "loginErrors[]=" . urlencode($error);
@@ -36,7 +47,7 @@ class LoginController extends LoginModel{
         header("location: ../index.php?" . $errorString);
         exit();
     }
-    
+
     public function validate(){
         if ($this->emptyInputs() == false) {
             $this->errors[] = "emptyInputs";
@@ -50,12 +61,18 @@ class LoginController extends LoginModel{
         if ($this->isValidCredentials() == false) {
             $this->errors[] = "invalidCredentials";
         }
+        if ($this->isVerified() == false) {
+            $this->errors[] = "notVerfied";
+            $this->startLoginSession();
+        }
         if (!empty($this->errors)) {
             $this->handleErrors($this->errors);
         }
     }
     public function login(){
         $this->validate();
+        $this->startLoginSession();
+
     }
 
 }

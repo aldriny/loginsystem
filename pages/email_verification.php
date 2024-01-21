@@ -4,10 +4,15 @@ require_once __DIR__ . '/../vendor/autoload.php';
 session_start();
 if (isset($_POST['otp'])) {
     $token = $_POST['otp'];
-    $email = $_SESSION['email'];
+    $email = $_SESSION['user_email'];
     $verify = new EmailVerificationController();
     $verificationResult = $verify->verify($token,$email);
     if($verificationResult == true){
+        if (isset($_SESSION['user_id'])) {
+            $_SESSION['user_verified'] = true;
+            header("location: login.php");
+            exit();
+        }
         header("location: ../index.php?verification=success");
         exit();
     }

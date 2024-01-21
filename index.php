@@ -7,9 +7,14 @@
 </head>
 <body>
     <?php
-        if (isset($_GET['verification']) && $_GET['verification'] === 'success') {
-            echo "Your Email was verfied successfully, please login";
-        }
+    session_start();
+    if(isset($_SESSION['user_id'])){
+        header('location: Pages/login.php');
+        exit();
+    }
+    if (isset($_GET['verification']) && $_GET['verification'] === 'success') {
+        echo "Your Email was verfied successfully, please login";
+    }
     ?>
     <h3>SIGN UP</h3>
     <form action="pages/signup.php" method="POST">

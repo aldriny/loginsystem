@@ -16,7 +16,7 @@
         $addUser = new SignupController($email,$firstName,$lastName,$pwd, $pwdRepeat);
         $addUser->signUp();
         
-        $_SESSION['email'] = $email;
+        $_SESSION['user_email'] = $email;
         $verifyEmail = new EmailVerificationController();
         $verifyEmail->sendEmail($email);  
         header("location: email_verification.php");

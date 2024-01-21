@@ -23,7 +23,7 @@ Class EmailVerificationModel extends Dbh{
                 $stmt->execute([$email]);
                 $result = $stmt->fetch();
                 return $result['verification_token'];
-    
+
             } catch (\PDOException $e) {
                 error_log("Database error: " . $e->getMessage());
                 throw new \Exception("An error occurred while processing your request. Please try again later.");
